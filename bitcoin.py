@@ -48,9 +48,12 @@ def computeDelta(wt, X, Xi):
     """
     # YOUR CODE GOES HERE
     def similarity(a, b):
-      mean_a = a.mean()
-      mean_b = b.mean()
-      return sum([(x[0] - mean_a)*(x[1] - mean_b) for x in zip(a, b)]) / (len(a) * a.std() * b.std())
+      mean_a = np.mean(a)
+      mean_b = np.mean(a)
+      std_a = np.std(a, dtype = np.float64)
+      std_b = np.std(b, dtype = np.float64)
+      return sum((a - mean_a) * (b - mean_b)) / (len(a) * std_a * std_b)
+
     up = sum([ Xi.iloc[i].Yi * math.exp(wt * similarity(X[:-1], Xi.iloc[i][:-1])) for i in Xi.index])
     down = sum([ math.exp(wt * similarity(X[:-1], Xi.iloc[i][:-1])) for i in Xi.index])
     return up / down
@@ -74,7 +77,6 @@ for i in xrange(0,len(train1_360.index)) :
 # Actual deltaP values for the train2 data.
 trainDeltaP = np.asarray(train2_360[['Yi']])
 trainDeltaP = np.reshape(trainDeltaP, -1)
-
 
 # Combine all the training data
 d = {'deltaP': trainDeltaP,
